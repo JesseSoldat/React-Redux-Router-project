@@ -1,14 +1,16 @@
 import React from 'react';
 import { connect } from 'react-redux';
-
+import Counter from './Counter'
 
 class App extends React.Component {
 	render() {
 		return (
 		<div className="container">
 			<h1>APP</h1>
-			<button>+</button>
-			<button>-</button>
+			<hr/>
+			<Counter count={this.props.likeCounter.results} plus={() => this.props.like(1)} 
+				minus={() => this.props.dislike(1)}
+			/>
 		</div>
 
 		)
@@ -17,7 +19,7 @@ class App extends React.Component {
 
 const mapStateToProps = (state) => {
 	return {
-		like: state.likeReducer
+		likeCounter: state.likeReducer
 	};
 };
 
