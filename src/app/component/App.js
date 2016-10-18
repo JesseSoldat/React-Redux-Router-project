@@ -1,12 +1,14 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import Counter from './Counter'
+import {Link, IndexLink } from 'react-router';
+import Counter from './Counter';
 
 class App extends React.Component {
 	render() {
 		return (
 		<div className="container">
 			<h1>APP</h1>
+			<li><Link to="/login">Login</Link></li>
 			<hr/>
 			<Counter count={this.props.likeCounter.results} plus={() => this.props.like(1)} 
 				minus={() => this.props.dislike(1)}

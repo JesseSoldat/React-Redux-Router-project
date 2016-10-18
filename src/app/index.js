@@ -8,6 +8,7 @@ import { syncHistoryWithStore, routerReducer } from 'react-router-redux'
 import { Provider } from 'react-redux';
 
 import App from './component/App';
+import { Login } from './component/login/Login';
 
 const likeReducer = (state = {
 	results: 0,
@@ -32,8 +33,6 @@ const likeReducer = (state = {
 	return state;
 };
 
-
-
 const store = createStore(
   combineReducers({
     likeReducer: likeReducer,
@@ -51,7 +50,7 @@ const history = syncHistoryWithStore(browserHistory, store);
 render(
 <Provider store={store}>
 	<Router history={history}>
-		
+			<Route path="/login" component={Login} />
 			<Route path="/" component={App}>
 			</Route>
 		
