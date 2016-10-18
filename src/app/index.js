@@ -1,33 +1,37 @@
+import firebase from 'firebase';
+import config from './firebaseConfig';
+firebase.initializeApp(config);
+
 import React from 'react';
 import { render } from 'react-dom';
+//Router
 import { Router, Route, browserHistory, IndexRoute } from 'react-router';
+//Redux
 import { createStore, combineReducers } from 'redux';
 
 import { syncHistoryWithStore, routerReducer } from 'react-router-redux'
 
 import { Provider } from 'react-redux';
 
+//Components
 import App from './component/App';
-import { Login } from './component/login/Login';
+import Login from './component/login/Login';
+import { Register } from './component/login/Register';
 
-const likeReducer = (state = {
-	results: 0,
-	lastValues: []
+//Reducers
+import likeReducer from './reducers/likeReducer';
+
+const loginReducer = (state = {
+	email: "",
+	password: ""
 }, action) => {
 	switch (action.type) {
-		case "LIKE":
+		case "LOGIN":
 			state = {
 				...state,
-				results: state.results+action.payload,
-				lastValues: [...state.lastValues, action.payload]
+				email: action.payload.email,
+				password: action.payload.password
 			};
-			break;
-		case "DISLIKE":
-			state = {
-				...state,
-				results: state.results - action.payload,
-				lastValues: [...state.lastValues, action.payload]
-			}
 			break;
 	}
 	return state;
@@ -36,6 +40,7 @@ const likeReducer = (state = {
 const store = createStore(
   combineReducers({
     likeReducer: likeReducer,
+    loginReducer: loginReducer,
     routing: routerReducer
   })
 )
@@ -51,6 +56,7 @@ render(
 <Provider store={store}>
 	<Router history={history}>
 			<Route path="/login" component={Login} />
+			<Route path="/register" component={Register} />
 			<Route path="/" component={App}>
 			</Route>
 		
