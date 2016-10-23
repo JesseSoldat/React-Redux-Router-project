@@ -4,16 +4,18 @@ export class Stars extends React.Component {
 
 	render(){
 
-		var numberOfStars = Math.floor(Math.random()*9)+ 1;
-		console.log(numberOfStars);
+		let stars = [];
 
+		for (let i = 0; i < this.props.numberOfStars; i++){
+			stars.push(
+			<span key={i} className="glyphicon glyphicon-star"></span>
+			);
+		}
 		return(
 		<div id="stars-frame">
-			<div className="Well">
-				{numberOfStars}
-				
+			<div className="well">
+				{stars}
 			</div>
-				}
 		</div>	
 		)
 	}

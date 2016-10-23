@@ -3,3 +3,44 @@
 	display: inline-block;
 	margin-right: 3%;
 }
+
+#stars-frame .well, #answer-frame .well {
+  height: 150px;
+}
+/*Stars-Frame*/
+#stars-frame .glyphicon {
+	margin: 0.3em;
+	font-size: 1.75em;
+}
+
+#stars-frame {
+	width: 40%;
+	float: left;
+}
+
+/*Button-Frame*/
+#button-frame {
+	width: 20%;
+	float: left;
+	text-align: center;
+	margin-top: 50px;
+}
+
+/*Answers-Frame*/
+#answer-frame {
+	width: 40%;
+	float: left;
+}
+
+/*Numbers-Frame*/
+#numbers-frame .number {
+	display: inline-block;
+	margin: 0.5em;
+	width: 30px;
+	background-color: #bbb;
+	text-align: center;
+	font-size: 22px;
+	border-radius: 50%;
+	cursor: pointer;
+}
+
