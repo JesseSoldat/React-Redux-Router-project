@@ -18,6 +18,8 @@ import App from './component/App';
 import Login from './component/login/Login';
 import { Register } from './component/login/Register';
 
+import { Game } from './component/playNine/Game';
+
 //Reducers
 import likeReducer from './reducers/likeReducer';
 
@@ -58,8 +60,8 @@ render(
 			<Route path="/login" component={Login} />
 			<Route path="/register" component={Register} />
 			<Route path="/" component={App}>
-			</Route>
-		
+			</Route>	
+			<Route path="/game" component={Game}/>
 	</Router>
 </Provider>
 
