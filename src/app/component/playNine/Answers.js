@@ -6,7 +6,7 @@ export class Answers extends React.Component {
 		let props = this.props;
 		let selectedNumbers = this.props.selectedNumbers.map(function(i){
 			return (
-			<span key={i}>{i}</span>
+			<span key={i} onClick={() => props.unselectNumber(i)}>{i}</span>
 			)
 		});
 	

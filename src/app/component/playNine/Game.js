@@ -14,10 +14,20 @@ export class Game extends React.Component {
 
 		this.state = {
 		numberOfStars: Math.floor(Math.random()*9)+ 1,
-		selectedNumbers: []
+		selectedNumbers: [],
+		usedNumbers: [],
+		correct: null
 		};
 
 		this.selectNumber = this.selectNumber.bind(this);
+
+		this.unselectNumber = this.unselectNumber.bind(this);
+
+		this.sumOfSelectedNumbers = this.sumOfSelectedNumbers.bind(this);
+
+		this.checkAnswer = this.checkAnswer.bind(this);
+
+		this.acceptAnswer = this.acceptAnswer.bind(this);
 	}
 
 
@@ -33,25 +43,80 @@ export class Game extends React.Component {
 		console.log(clickedNumber);
 		if (this.state.selectedNumbers.indexOf(clickedNumber) < 0) {
 			this.setState({
-				selectedNumbers: this.state.selectedNumbers.concat(clickedNumber)
-			})
-			
+				selectedNumbers: this.state.selectedNumbers.concat(clickedNumber),
+				correct: null
+			});	
 		}
 	}
 
+	unselectNumber(clickedNumber){
+		let selectedNumbers = this.state.selectedNumbers;
+		let indexOfNumber = selectedNumbers.indexOf(clickedNumber);
+		selectedNumbers.splice(indexOfNumber, 1);
+
+		this.setState({
+			selectedNumbers: selectedNumbers,
+			correct: null
+		});
+	}
+
+	sumOfSelectedNumbers(){
+		return this.state.selectedNumbers.reduce((p, n) => {
+			return p + n;
+		}, 0);
+	}
+
+	checkAnswer(){
+		let correct = (this.state.numberOfStars === this.sumOfSelectedNumbers());
+
+		this.setState({ correct: correct});
+	}
+
+	acceptAnswer(){
+		let usedNumbers = this.state.usedNumbers.concat(this.state.selectedNumbers);
+		this.setState({
+			selectedNumbers: [],
+			usedNumbers: usedNumbers,
+			correct: null,
+			numberOfStars: Math.floor(Math.random()*9)+ 1
+		})
+	}
+
 	render(){
+		let numberOfStars = this.state.numberOfStars;
+		let selectedNumbers = this.state.selectedNumbers;
+		let correct = this.state.correct;
+		let usedNumbers = this.state.usedNumbers;
+
 		return(
 		<div>
 			<Nav/>
 			<h2>Play Nine</h2>
 			<div className="clearfix">
-				<Stars numberOfStars={this.state.numberOfStars}/>
-				<Button selectedNumbers={this.state.selectedNumbers}/>
+
+				<Stars 
+					numberOfStars={numberOfStars}
+				/>
+
+				<Button 
+					correct={correct}
+					selectedNumbers={selectedNumbers}
+					checkAnswer={this.checkAnswer}
+					acceptAnswer={this.acceptAnswer}
+				/>
+
 				<Answers
-				selectedNumbers={this.state.selectedNumbers} />
+					unselectNumber={this.unselectNumber}
+					selectedNumbers={selectedNumbers} 
+				/>
+
 			</div>
-			<Numbers selectedNumbers={this.state.selectedNumbers}
-				selectNumber={this.selectNumber} />
+
+			<Numbers 
+				selectedNumbers={selectedNumbers}
+				selectNumber={this.selectNumber} 
+				usedNumbers={usedNumbers}
+			/>
 
 
 		</div>
