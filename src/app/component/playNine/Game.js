@@ -6,6 +6,7 @@ import { Stars } from './Stars';
 import { Button } from './Button';
 import { Answers } from './Answers';
 import { Numbers } from './Numbers';
+import { Done } from './Done';
 
 export class Game extends React.Component {
 
@@ -13,10 +14,12 @@ export class Game extends React.Component {
 		super(props)
 
 		this.state = {
-		numberOfStars: Math.floor(Math.random()*9)+ 1,
+		numberOfStars: this.randomNumber(),
 		selectedNumbers: [],
 		usedNumbers: [],
-		correct: null
+		correct: null,
+		redraws: 5,
+		doneStatus: null
 		};
 
 		this.selectNumber = this.selectNumber.bind(this);
@@ -28,6 +31,20 @@ export class Game extends React.Component {
 		this.checkAnswer = this.checkAnswer.bind(this);
 
 		this.acceptAnswer = this.acceptAnswer.bind(this);
+
+		this.redraw = this.redraw.bind(this);
+
+		this.randomNumber = this.randomNumber.bind(this);
+
+		this.updateDoneStatus = this.updateDoneStatus.bind(this);
+
+		this.possibleSolution = this.possibleSolution.bind(this);
+
+		this.possibleCombinationSum = this.possibleCombinationSum.bind(this);
+
+		this.resetGame = this.resetGame.bind(this);
+
+		
 	}
 
 
@@ -37,6 +54,40 @@ export class Game extends React.Component {
 				browserHistory.push('/login');
 			}
 		});
+	}
+
+	resetGame(){
+		this.setState({
+			numberOfStars: this.randomNumber(),
+			selectedNumbers: [],
+			usedNumbers: [],
+			correct: null,
+			redraws: 5,
+			doneStatus: null
+		});
+	}
+
+	possibleCombinationSum(arr, n) {
+			console.log('possibleCombinationSum');
+			  if (arr.indexOf(n) >= 0) { return true; }
+			  if (arr[0] > n) { return false; }
+			  if (arr[arr.length - 1] > n) {
+			    arr.pop();
+			    return possibleCombinationSum(arr, n);
+			  }
+			  var listSize = arr.length, combinationsCount = (1 << listSize)
+			  for (var i = 1; i < combinationsCount ; i++ ) {
+			    var combinationSum = 0;
+			    for (var j=0 ; j < listSize ; j++) {
+			      if (i & (1 << j)) { combinationSum += arr[j]; }
+			    }
+			    if (n === combinationSum) { return true; }
+			  }
+			  return false;
+	}
+
+	randomNumber(){
+		return Math.floor(Math.random()*9) + 1
 	}
 
 	selectNumber(clickedNumber){
@@ -78,8 +129,51 @@ export class Game extends React.Component {
 			selectedNumbers: [],
 			usedNumbers: usedNumbers,
 			correct: null,
-			numberOfStars: Math.floor(Math.random()*9)+ 1
+			numberOfStars: this.randomNumber()
+		}, function(){
+			this.updateDoneStatus();
 		})
+	}
+
+	redraw(){
+		if(this.state.redraws > 0) {
+			this.setState({
+				numberOfStars: this.randomNumber(),
+				correct: null,
+				selectedNumbers: [],
+				redraws: this.state.redraws -1
+			}, function(){
+				this.updateDoneStatus();
+			});
+		}
+	}
+
+	possibleSolution(){
+		let numberOfStars = this.state.numberOfStars;
+		let possibleNumbers = [];
+		let usedNumbers = this.state.usedNumbers;
+
+		for(let i = 1; i <=9; i++){
+			if(usedNumbers.indexOf(i) < 0){
+				possibleNumbers.push(i);
+			}
+		}
+		// console.log('possibleSolution');
+		return this.possibleCombinationSum(possibleNumbers, numberOfStars);
+	}
+
+	updateDoneStatus(){
+		if(this.state.usedNumbers.length === 9){
+			this.setState({
+				doneStatus: 'You Win!'
+			});
+			return;
+		}
+		if(this.state.redraws === 0 && !this.possibleSolution()){
+			this.setState({
+				doneStatus: 'Game Over!'
+			});
+		}
 	}
 
 	render(){
@@ -87,6 +181,22 @@ export class Game extends React.Component {
 		let selectedNumbers = this.state.selectedNumbers;
 		let correct = this.state.correct;
 		let usedNumbers = this.state.usedNumbers;
+		let redraws = this.state.redraws;
+		let doneStatus = this.state.doneStatus;
+		let bottomFrame;
+
+		if (doneStatus) {
+			bottomFrame = <Done doneStatus={doneStatus}
+				resetGame={this.resetGame}
+			/>
+		} else {
+			bottomFrame = <Numbers
+				selectedNumbers={selectedNumbers}
+				usedNumbers={usedNumbers}
+				selectNumber={this.selectNumber}
+				/>
+		}
+
 
 		return(
 		<div>
@@ -103,6 +213,8 @@ export class Game extends React.Component {
 					selectedNumbers={selectedNumbers}
 					checkAnswer={this.checkAnswer}
 					acceptAnswer={this.acceptAnswer}
+					redraw={this.redraw}
+					redraws={redraws}
 				/>
 
 				<Answers
@@ -111,12 +223,7 @@ export class Game extends React.Component {
 				/>
 
 			</div>
-
-			<Numbers 
-				selectedNumbers={selectedNumbers}
-				selectNumber={this.selectNumber} 
-				usedNumbers={usedNumbers}
-			/>
+			{bottomFrame}
 
 
 		</div>
